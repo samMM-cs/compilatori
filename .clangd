@@ -1,0 +1,11 @@
+If:
+  PathMatch: .*\.c
+CompileFlags:
+  Add: [-x, c]
+
+---
+
+If:
+  PathMatch: .*\.h
+CompileFlags:
+  Add: [-x, c-header]
