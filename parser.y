@@ -14,6 +14,7 @@
   char *string;
   double num;
 }
+%define parse.error verbose
 
 %token <id> CITY_ID TOUR_ID
 %token <string> CITY_NAME WORD

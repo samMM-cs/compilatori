@@ -1,0 +1,24 @@
+PMO "Palermo" (10.0,25.0)
+NPL "Napoli" (10.0,60.0)
+RMA "Roma" (10.0,80.0)
+ATN "Atene" (150.0,60.0)
+MIL "Milano" (10.0,120.0)
+%%%
+X25
+Costa Mediterranea
+PMO
+&&&
+F56
+Italia
+NPL
+&&&
+L65
+Grecia
+ATN
+%%%
+X25 NPL
+X25 RMA
+F56 RMA
+F56 MIL
+L65 ATN
+L65 NPL
