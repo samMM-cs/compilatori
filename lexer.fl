@@ -1,0 +1,58 @@
+%{
+  #include "parser.tab.h"
+%}
+%option noyywrap
+%option yylineno
+
+
+NEWLINE  "\r"?"\n"
+CITY_ID  [A-Z]{3}
+CITY_NAME  \"[A-Za-z \'_-]+\"
+NUM  -?[0-9]+(\.[0-9]+)?
+TOUR_ID  [A-Z][0-9]{2}
+WORD  [A-Za-z0-9\'_-]+
+WS  [ \t]+
+
+%%
+({NEWLINE}{WS}*)+  { return NEWLINE; }
+
+"%%%"  { return SECTION_SEP; }
+
+"&&&"  { return TOUR_SEP; }
+
+[(),]  { return *yytext; }
+
+{CITY_ID}  {
+  strncpy(yylval.id, yytext, 3);
+  yylval.id[3] = '\0';
+  return CITY_ID;
+}
+
+{CITY_NAME}  {
+  // ignore quotes
+  yylval.string = strndup(yytext + 1, yyleng - 2);
+  return CITY_NAME;
+}
+
+{NUM}  {
+  yylval.num = atof(yytext);
+  return NUM;
+}
+
+{TOUR_ID}  {
+  strncpy(yylval.id, yytext, 3);
+  yylval.id[3] = '\0';
+  return TOUR_ID;
+}
+
+{WORD} {
+  yylval.string = strdup(yytext);
+  return WORD;
+}
+
+{WS}+ { /* ignore white space */ }
+
+.  {
+  fprintf(stderr, "Lexical error: unexpected character '%s' on line %d\n", yytext, yylineno);
+}
+%%
