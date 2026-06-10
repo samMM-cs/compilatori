@@ -30,6 +30,10 @@ City *lookupCity(const char id[4]) {
 }
 
 City *insertCity(const char id[4], const char *name, double x, double y) {
+  if (lookupCity(id)) {
+    fprintf(stderr, "Semantic Error: City ID %s is already defined.\n", id);
+    exit(EXIT_FAILURE);
+  }
   City *city = (City *)malloc(sizeof(City));
   if (!city)
     exit(EXIT_FAILURE);
@@ -52,11 +56,21 @@ Tour *lookupTour(const char id[4]) {
 
 Tour *insertTour(const char id[4], const char *name,
                  const char startCityId[4]) {
+  if (lookupTour(id)) {
+    fprintf(stderr, "Semantic error: Tour ID %s already defined\n", id);
+    exit(EXIT_FAILURE);
+  }
   Tour *tour = (Tour *)malloc(sizeof(Tour));
   if (!tour)
     exit(EXIT_FAILURE);
   idDup(tour->id, id);
   tour->name = strdup(name);
+  if (!lookupCity(startCityId)) {
+    fprintf(stderr,
+            "Semantic Error: Start city %s for tour %s has not been defined\n",
+            startCityId, id);
+    exit(EXIT_FAILURE);
+  }
   for (int i = 0; i < 4; i++)
     tour->currentCityId[i] = startCityId[i];
   tour->distance = 0;
@@ -83,10 +97,16 @@ Tour *insertTour(const char id[4], const char *name,
 
 void addStop(const char tourId[4], const char nextCityId[4]) {
   Tour *tour = lookupTour(tourId);
-  if (!tour)
-    return;
+  if (!tour) {
+    fprintf(stderr, "Semantic error: Tour %s not defined.\n", tourId);
+    exit(EXIT_FAILURE);
+  }
   City *currentCity = lookupCity(tour->currentCityId);
   City *nextCity = lookupCity(nextCityId);
+  if (!nextCity) {
+    fprintf(stderr, "Semantic error: City %s not defined.\n", nextCityId);
+    exit(EXIT_FAILURE);
+  }
   if (!currentCity || !nextCity)
     return;
   double dist =
@@ -120,6 +140,6 @@ void printResults() {
         printf(" -> ");
       curr = curr->next;
     }
-    printf(" %.2lf\n", totalCost);
+    printf(" %.2lf€\n", totalCost);
   }
 }

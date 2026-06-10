@@ -3,7 +3,7 @@
 
 #define TABLESIZE 101
 typedef struct City {
-  char id[4]; // 3 letters + '0'
+  char id[4]; // 3 letters + '\0'
   char *name;
   double x, y;       // coordinates
   struct City *next; // collision separate chaining
